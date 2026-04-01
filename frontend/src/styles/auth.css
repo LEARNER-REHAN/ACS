@@ -1,0 +1,183 @@
+/* ============================= */
+/* BACKGROUND */
+/* ============================= */
+
+.auth-container {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #eef2ff, #f8fafc);
+  overflow: hidden;
+  position: relative;
+}
+
+/* Soft Background Glow */
+.auth-container::before,
+.auth-container::after {
+  content: "";
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  filter: blur(120px);
+  opacity: 0.3;
+}
+
+.auth-container::before {
+  background: #93c5fd;
+  top: -150px;
+  left: -150px;
+}
+
+.auth-container::after {
+  background: #c4b5fd;
+  bottom: -150px;
+  right: -150px;
+}
+
+/* ============================= */
+/* CARD FLIP */
+/* ============================= */
+
+.auth-card {
+  width: 380px;
+  perspective: 1000px;
+}
+
+.card-inner {
+  position: relative;
+  width: 100%;
+  min-height: 520px;
+  transition: transform 0.8s ease;
+  transform-style: preserve-3d;
+}
+
+.auth-card.flip .card-inner {
+  transform: rotateY(180deg);
+}
+
+/* ============================= */
+/* CARD SIDES */
+/* ============================= */
+
+.card-front,
+.card-back {
+  position: absolute;
+  width: 100%;
+  top: 0;
+  left: 0;
+  padding: 40px 30px;
+  border-radius: 20px;
+  background: white;
+  color: #1e293b;
+  text-align: center;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e2e8f0;
+  backface-visibility: hidden;
+}
+
+.card-back {
+  transform: rotateY(180deg);
+}
+
+/* ============================= */
+/* TITLE */
+/* ============================= */
+
+h2 {
+  margin-bottom: 25px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+/* ============================= */
+/* INPUTS */
+/* ============================= */
+
+.input-group {
+  position: relative;
+  margin: 22px 0;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 12px 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  border-bottom: 2px solid #cbd5e1;
+  color: #1e293b;
+  font-size: 14px;
+  transition: 0.3s;
+}
+
+.input-group input:focus {
+  border-bottom: 2px solid #2563eb;
+}
+
+.input-group label {
+  position: absolute;
+  left: 0;
+  top: 12px;
+  color: #94a3b8;
+  transition: 0.3s;
+  pointer-events: none;
+  font-size: 14px;
+}
+
+.input-group input:focus + label,
+.input-group input:not(:placeholder-shown) + label {
+  top: -12px;
+  font-size: 12px;
+  color: #2563eb;
+}
+
+/* ============================= */
+/* BUTTON */
+/* ============================= */
+
+button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 20px;
+  border: none;
+  border-radius: 10px;
+  background: #2563eb;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+button:hover {
+  background: #1d4ed8;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.25);
+}
+
+/* ============================= */
+/* LINKS */
+/* ============================= */
+
+p {
+  margin-top: 20px;
+  font-size: 14px;
+  color: #64748b;
+}
+
+span {
+  color: #2563eb;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+span:hover {
+  text-decoration: underline;
+}
+
+.error {
+  color: #ef4444;
+  font-size: 13px;
+  margin-bottom: 10px;
+}

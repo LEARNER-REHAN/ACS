@@ -1,0 +1,148 @@
+/* 🌐 Global */
+body {
+  margin: 0;
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: linear-gradient(135deg, #d6f0ff, #f0fbff);
+}
+
+/* 🔝 Navbar (Glass Effect) */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 50px;
+
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(10px);
+
+  box-shadow: 0 4px 20px rgba(0, 150, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+
+  animation: slideDown 0.8s ease;
+}
+
+/* Logo */
+.logo {
+  color: #0096ff;
+  font-weight: 600;
+}
+
+/* 🧭 Nav Links */
+.nav-links {
+  display: flex;
+  gap: 30px;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: #1e3a5f;
+  font-weight: 500;
+  transition: 0.3s;
+}
+
+.nav-links a:hover {
+  color: #0096ff;
+}
+
+/* 🔘 Login Button (Glossy) */
+.login-btn {
+  padding: 8px 18px;
+  border-radius: 20px;
+  text-decoration: none;
+  color: white;
+
+  background: linear-gradient(135deg, #4fc3f7, #0288d1);
+  box-shadow: 0 4px 12px rgba(0, 150, 255, 0.3);
+
+  transition: 0.3s;
+}
+
+.login-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0, 150, 255, 0.4);
+}
+
+/* 🌟 Hero Section */
+.hero {
+  text-align: center;
+  margin-top: 120px;
+  padding: 20px;
+}
+
+/* Heading */
+.hero h1 {
+  font-size: 46px;
+  color: #01579b;
+  margin-bottom: 10px;
+
+  animation: fadeIn 1s ease forwards;
+}
+
+/* Paragraph */
+.hero p {
+  color: #3b6ea5;
+  max-width: 600px;
+  margin: 20px auto;
+  font-size: 18px;
+
+  animation: fadeIn 1.5s ease forwards;
+}
+
+/* 🎯 Button (Glossy CTA) */
+.start-btn {
+  padding: 14px 30px;
+  border-radius: 25px;
+  border: none;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+
+  background: linear-gradient(135deg, #4fc3f7, #0288d1);
+  box-shadow: 0 6px 20px rgba(0, 150, 255, 0.3);
+
+  transition: 0.3s;
+  animation: popIn 1.8s ease forwards;
+  text-decoration: none;
+}
+
+.start-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(0, 150, 255, 0.4);
+}
+
+/* ✨ Animations */
+@keyframes slideDown {
+  from {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes popIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  70% {
+    transform: scale(1.05);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
