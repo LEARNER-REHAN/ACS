@@ -1,16 +1,19 @@
 const getStreak = () => {
-  const today = new Date();
+  const today = new Date().toDateString(); // ✅ FIX
   const lastCheckIn = localStorage.getItem("lastCheckIn");
+
   let streak = Number(localStorage.getItem("streak")) || 0;
 
   if (!lastCheckIn) {
     localStorage.setItem("streak", 1);
+    localStorage.setItem("lastCheckIn", today);
     return 1;
   }
 
   const lastDate = new Date(lastCheckIn);
+  const currentDate = new Date(today);
 
-  const diffTime = today - lastDate;
+  const diffTime = currentDate - lastDate;
   const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
 
   if (diffDays === 0) {
@@ -24,7 +27,9 @@ const getStreak = () => {
   }
 
   localStorage.setItem("streak", streak);
-  localStorage.setItem("lastCheckIn", today.toDateString());
+  localStorage.setItem("lastCheckIn", today);
 
   return streak;
 };
+
+export default getStreak;

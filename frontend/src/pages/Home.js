@@ -3,19 +3,20 @@ import "../styles/dashboard.css";
 
 function Home() {
   const [streak, setStreak] = useState(0);
+  const [progress, setProgress] = useState(0);
+  const [improvement, setImprovement] = useState(0);
 
   useEffect(() => {
-    const updateStreak = () => {
-      const stored = localStorage.getItem("streak") || 0;
-      setStreak(stored);
+    const updateData = () => {
+      setStreak(Number(localStorage.getItem("streak")) || 0);
+      setProgress(Number(localStorage.getItem("overallProgress")) || 0);
+      setImprovement(Number(localStorage.getItem("improvement")) || 0);
     };
 
-    updateStreak();
+    updateData();
+    window.addEventListener("focus", updateData);
 
-    // 🔥 Auto update when user returns
-    window.addEventListener("focus", updateStreak);
-
-    return () => window.removeEventListener("focus", updateStreak);
+    return () => window.removeEventListener("focus", updateData);
   }, []);
 
   return (
@@ -30,12 +31,15 @@ function Home() {
 
         <div className="card">
           <h4>Recovery Progress</h4>
-          <p>65%</p>
+          <p>{progress}%</p>
         </div>
 
         <div className="card">
           <h4>Weekly Improvement</h4>
-          <p>+12%</p>
+          <p style={{ color: improvement > 0 ? "green" : "red" }}>
+            {improvement > 0 ? "+" : ""}
+            {improvement}%
+          </p>
         </div>
       </div>
     </div>

@@ -11,13 +11,18 @@ import Landing from "./pages/Landing";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 
+// ✅ App pages
+import Instagram from "./pages/apps/Instagram";
+import YouTube from "./pages/apps/YouTube";
+import WhatsApp from "./pages/apps/WhatsApp";
+import Games from "./pages/apps/Games";
+
 function AppWrapper() {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
   // ✅ LOGIN
   const handleLogin = (userData) => {
-    console.log("LOGGED IN:", userData);
     setUser(userData);
     navigate("/dashboard");
   };
@@ -30,13 +35,13 @@ function AppWrapper() {
 
   return (
     <Routes>
-      {/* 🏠 LANDING PAGE */}
+      {/* 🏠 Landing */}
       <Route path="/" element={<Landing />} />
 
-      {/* 🔐 LOGIN */}
+      {/* 🔐 Login */}
       <Route path="/login" element={<Auth onLogin={handleLogin} />} />
 
-      {/* 📊 DASHBOARD (PROTECTED) */}
+      {/* 📊 Dashboard (Protected) */}
       <Route
         path="/dashboard"
         element={
@@ -48,7 +53,13 @@ function AppWrapper() {
         }
       />
 
-      {/* 🔁 FALLBACK (ANY UNKNOWN ROUTE → LANDING) */}
+      {/* 📱 Apps */}
+      <Route path="/instagram" element={<Instagram />} />
+      <Route path="/youtube" element={<YouTube />} />
+      <Route path="/whatsapp" element={<WhatsApp />} />
+      <Route path="/games" element={<Games />} />
+
+      {/* 🔁 Fallback */}
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   );
