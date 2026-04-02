@@ -1,8 +1,20 @@
+import "../../styles/appScreens.css";
 function YouTube() {
   return (
-    <div style={{ padding: "40px" }}>
+    <div className="app-screen">
       <h2>▶️ YouTube</h2>
-      <p>Watching videos... (Simulated)</p>
+
+      <div className="video-list">
+        <div className="video">
+          <div className="thumbnail"></div>
+          <p>How to stay focused 🔥</p>
+        </div>
+
+        <div className="video">
+          <div className="thumbnail"></div>
+          <p>Motivation video 💪</p>
+        </div>
+      </div>
     </div>
   );
 }

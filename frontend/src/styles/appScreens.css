@@ -1,0 +1,90 @@
+.app-screen {
+  padding: 20px;
+  max-width: 500px;
+  margin: auto;
+  font-family: Arial, sans-serif;
+}
+
+/* ===== INSTAGRAM ===== */
+.feed {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.post {
+  background: white;
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+.post-img {
+  height: 200px;
+  background: #ddd;
+  margin: 10px 0;
+  border-radius: 8px;
+}
+
+.post-header {
+  font-weight: bold;
+}
+
+.post-actions {
+  font-size: 18px;
+}
+
+/* ===== YOUTUBE ===== */
+.video-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.video {
+  background: white;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.thumbnail {
+  height: 150px;
+  background: #ccc;
+  border-radius: 10px;
+  margin-bottom: 8px;
+}
+
+/* ===== WHATSAPP ===== */
+.chat {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.message {
+  padding: 10px;
+  border-radius: 10px;
+  max-width: 70%;
+}
+
+.left {
+  background: #eee;
+  align-self: flex-start;
+}
+
+.right {
+  background: #25d366;
+  color: white;
+  align-self: flex-end;
+}
+
+/* ===== GAME ===== */
+button {
+  padding: 10px 20px;
+  margin-top: 20px;
+  background: #4f46e5;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
