@@ -1,26 +1,28 @@
-import "../styles/auth.css";
-import { Link } from "react-router-dom";
+const handleLogin = async () => {
+  try {
+    const res = await fetch("http://localhost:5001/api/auth/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username: email,
+        password,
+      }),
+    });
 
-function Login() {
-  return (
-    <div className="auth-container">
-      <div className="auth-box">
-        <h2>Login</h2>
+    const data = await res.json();
 
-        <input type="text" placeholder="Email" />
-        <input type="password" placeholder="Password" />
+    if (!res.ok) {
+      throw new Error(data.error || "Login failed");
+    }
 
-        <button className="auth-btn">Login</button>
+    console.log("LOGIN SUCCESS:", data);
 
-        <p>
-          Don’t have an account?{" "}
-          <Link to="/register" className="">
-            Register
-          </Link>
-        </p>
-      </div>
-    </div>
-  );
-}
-
-export default Login;
+    onLogin(data);
+    navigate("/dashboard");
+  } catch (err) {
+    console.error(err);
+    setError(err.message || "Server error. Try again.");
+  }
+};

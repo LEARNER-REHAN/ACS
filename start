@@ -1,0 +1,4 @@
+mvn clean
+mvn spring-boot:run
+
+node server.js
