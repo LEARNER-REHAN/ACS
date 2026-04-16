@@ -1,7 +1,14 @@
 import React, { useState } from "react";
 import Home from "./Home";
 import DataEntry from "./DataEntry";
-import Apps from "./Apps";
+import About from "./About";
+
+import SmokingPage from "./Category/SmokingPage";
+import GamingPage from "./Category/GamingPage";
+import SocialMediaPage from "./Category/SocialMediaPage";
+import StreamingPage from "./Category/StreamingPage";
+import AlcoholPage from "./Category/AlcoholPage";
+
 import "../styles/dashboard.css";
 
 function Dashboard({ user, onLogout }) {
@@ -12,8 +19,8 @@ function Dashboard({ user, onLogout }) {
     const usage = Number(data.usage);
     const craving = Number(data.craving);
     const mood = Number(data.mood);
+    const category = data.category;
 
-    // ===== RISK =====
     let risk = "Low 🟢";
     let suggestion = "Keep going 👍";
 
@@ -29,65 +36,14 @@ function Dashboard({ user, onLogout }) {
       suggestion += " Talk to a friend ❤️";
     }
 
-    // ===== STREAK =====
-    const today = new Date().toDateString();
-    const lastCheckIn = localStorage.getItem("lastCheckIn");
-    let streak = Number(localStorage.getItem("streak")) || 0;
+    setResult({ risk, suggestion, category });
 
-    if (!lastCheckIn) {
-      streak = 1;
-    } else {
-      const last = new Date(lastCheckIn);
-      const now = new Date(today);
-      const diff = Math.floor((now - last) / (1000 * 60 * 60 * 24));
-
-      if (diff === 1) streak += 1;
-      else if (diff > 1) streak = 1;
-    }
-
-    localStorage.setItem("streak", String(streak));
-    localStorage.setItem("lastCheckIn", today);
-
-    // ===== DAILY PROGRESS =====
-    const score = 10 - usage + (10 - craving) + mood;
-    const progress = Math.round((score / 30) * 100);
-
-    // ===== HISTORY STORAGE =====
-    const history = JSON.parse(localStorage.getItem("history")) || [];
-
-    history.push({
-      date: new Date().toLocaleDateString(),
-      usage,
-      craving,
-      mood,
-      progress,
-    });
-
-    localStorage.setItem("history", JSON.stringify(history));
-
-    // ===== OVERALL PROGRESS =====
-    let total = 0;
-    history.forEach((entry) => {
-      total += entry.progress;
-    });
-
-    const overallProgress = Math.round(total / history.length);
-
-    localStorage.setItem("overallProgress", String(overallProgress));
-
-    // ===== IMPROVEMENT =====
-    const previous = Number(localStorage.getItem("progress")) || 0;
-    const improvement = progress - previous;
-
-    localStorage.setItem("progress", String(progress));
-    localStorage.setItem("improvement", String(improvement));
-
-    localStorage.setItem("riskLevel", risk);
-    // refresh UI
-    window.dispatchEvent(new Event("focus"));
-
-    setResult({ risk, suggestion });
-    setPage("home");
+    // 🔥 Redirect to category page
+    if (category === "Smoking") setPage("smoking");
+    else if (category === "Gaming") setPage("gaming");
+    else if (category === "Social Media") setPage("social");
+    else if (category === "Streaming") setPage("streaming");
+    else if (category === "Alcohol") setPage("alcohol");
   };
 
   return (
@@ -100,7 +56,7 @@ function Dashboard({ user, onLogout }) {
           <ul className="nav-links">
             <li onClick={() => setPage("home")}>🏠 Home</li>
             <li onClick={() => setPage("entry")}>🧠 Daily Check-In</li>
-            <li onClick={() => setPage("apps")}>📱 Apps</li>
+            <li onClick={() => setPage("about")}>About</li>
           </ul>
         </div>
 
@@ -110,7 +66,7 @@ function Dashboard({ user, onLogout }) {
         </div>
       </div>
 
-      {/* MAIN */}
+      {/* MAIN CONTENT */}
       <div className="main-content">
         {page === "home" && (
           <>
@@ -119,6 +75,9 @@ function Dashboard({ user, onLogout }) {
             {result && (
               <div className="result-box">
                 <h3>📊 Prediction</h3>
+                <p>
+                  <b>Category:</b> {result.category}
+                </p>
                 <p>
                   <b>{result.risk}</b>
                 </p>
@@ -129,7 +88,14 @@ function Dashboard({ user, onLogout }) {
         )}
 
         {page === "entry" && <DataEntry onAnalyze={analyzeData} />}
-        {page === "apps" && <Apps />}
+        {page === "about" && <About />}
+
+        {/* CATEGORY PAGES */}
+        {page === "smoking" && <SmokingPage />}
+        {page === "gaming" && <GamingPage />}
+        {page === "social" && <SocialMediaPage />}
+        {page === "streaming" && <StreamingPage />}
+        {page === "alcohol" && <AlcoholPage />}
       </div>
     </div>
   );

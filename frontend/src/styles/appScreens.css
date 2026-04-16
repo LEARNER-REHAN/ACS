@@ -34,22 +34,65 @@
   font-size: 18px;
 }
 
-/* ===== YOUTUBE ===== */
-.video-list {
+/* ===== YOUTUBE CLONE ===== */
+
+.yt-container {
+  font-family: Arial, sans-serif;
+}
+
+/* NAVBAR */
+.yt-navbar {
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  background: white;
+  border-bottom: 1px solid #ddd;
+}
+
+.yt-navbar input {
+  padding: 8px;
+  width: 250px;
+  border-radius: 20px;
+  border: 1px solid #ccc;
+}
+
+/* BODY */
+.yt-body {
+  display: flex;
+}
+
+/* SIDEBAR */
+.yt-sidebar {
+  width: 180px;
+  padding: 15px;
+  background: #f9f9f9;
+  height: 100vh;
+}
+
+.yt-sidebar p {
+  margin: 10px 0;
+  cursor: pointer;
+}
+
+/* CONTENT */
+.yt-content {
+  flex: 1;
+  padding: 20px;
+
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 20px;
 }
 
-.video {
-  background: white;
-  padding: 10px;
-  border-radius: 10px;
+/* VIDEO CARD */
+.yt-video {
+  cursor: pointer;
 }
 
-.thumbnail {
-  height: 150px;
-  background: #ccc;
+.yt-thumb {
+  height: 160px;
+  background: #ddd;
   border-radius: 10px;
   margin-bottom: 8px;
 }
