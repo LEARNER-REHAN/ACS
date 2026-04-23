@@ -1,32 +1,89 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "../../styles/CategoryPage.css";
 
 function SocialMediaPage() {
+  const [target, setTarget] = useState(
+    localStorage.getItem("socialTarget") || "",
+  );
+
+  const [screenTime, setScreenTime] = useState("");
+  const [mood, setMood] = useState("");
+  const [urge, setUrge] = useState("");
+  const [history, setHistory] = useState([]);
+  const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    const saved = JSON.parse(localStorage.getItem("socialHistory")) || [];
+    setHistory(saved);
+  }, []);
+
+  const saveTarget = () => {
+    localStorage.setItem("socialTarget", target);
+    setMessage(`🎯 Target: ${target} hrs/day`);
+  };
+
+  const trackToday = () => {
+    const entry = {
+      date: new Date().toLocaleDateString(),
+      hours: Number(screenTime),
+      mood,
+      urge,
+    };
+
+    const updated = [...history, entry];
+    setHistory(updated);
+    localStorage.setItem("socialHistory", JSON.stringify(updated));
+
+    if (Number(screenTime) <= Number(target)) {
+      setMessage("🎉 Screen time target achieved!");
+    }
+
+    setScreenTime("");
+    setMood("");
+    setUrge("");
+  };
+
+  const emergencyHelp = () => {
+    alert("Turn off notifications and go offline.");
+  };
+
   return (
     <div className="category-page">
-      <h2>📱 Social Media Control</h2>
+      <h2>📱 Social Media Recovery</h2>
 
       <div className="card">
-        <h3>📊 Progress</h3>
-        <div className="progress-bar">
-          <div className="progress" style={{ width: "55%" }}></div>
-        </div>
+        <input
+          placeholder="Target screen time"
+          value={target}
+          onChange={(e) => setTarget(e.target.value)}
+        />
+        <button onClick={saveTarget}>Save Target</button>
       </div>
 
       <div className="card">
-        <h3>🎯 Tips</h3>
-        <div className="tips">
-          <div className="tip">📵 Limit usage</div>
-          <div className="tip">🔕 Disable alerts</div>
-          <div className="tip">🌙 No late scroll</div>
-          <div className="tip">📚 Focus work</div>
-        </div>
+        <input
+          placeholder="Today's screen time"
+          value={screenTime}
+          onChange={(e) => setScreenTime(e.target.value)}
+        />
+        <input
+          placeholder="Mood"
+          value={mood}
+          onChange={(e) => setMood(e.target.value)}
+        />
+        <input
+          placeholder="Urge"
+          value={urge}
+          onChange={(e) => setUrge(e.target.value)}
+        />
+        <button onClick={trackToday}>Track Today</button>
       </div>
 
-      <div className="card actions">
-        <button>Start Challenge</button>
-        <button className="secondary">Track</button>
+      <div className="card">
+        <button onClick={emergencyHelp}>🚨 Emergency Help</button>
       </div>
+
+      <p>{message}</p>
     </div>
   );
 }
