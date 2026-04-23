@@ -1,142 +1,130 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "../../styles/CategoryPage.css";
 
 function SmokingPage() {
-  const [target, setTarget] = useState(
-    localStorage.getItem("smokingTarget") || "",
-  );
-
-  const [showTargetInput, setShowTargetInput] = useState(false);
-
+  const [target, setTarget] = useState("");
   const [todayCigarettes, setTodayCigarettes] = useState("");
 
-  const [mood, setMood] = useState("");
+  const savedTarget = Number(localStorage.getItem("smokingTarget"));
 
-  const [craving, setCraving] = useState("");
+  const history = JSON.parse(localStorage.getItem("smokingHistory")) || [];
 
-  const [history, setHistory] = useState([]);
+  const latestRecord = history.length > 0 ? history[history.length - 1] : null;
 
-  const [message, setMessage] = useState("");
-
-  useEffect(() => {
-    const savedHistory =
-      JSON.parse(localStorage.getItem("smokingHistory")) || [];
-
-    setHistory(savedHistory);
-  }, []);
-
-  // Save target
+  // Save Target
   const saveTarget = () => {
-    if (!target) {
-      alert("Enter target");
+    const value = Number(target);
+
+    if (!value || value <= 0 || value > 100) {
+      alert("Target must be between 1-100 cigarettes");
       return;
     }
 
-    localStorage.setItem("smokingTarget", target);
+    localStorage.setItem("smokingTarget", value);
 
-    setShowTargetInput(false);
-    setMessage(`🎯 Target set: ${target} cigarettes/day`);
+    alert("Target saved successfully!");
+    setTarget("");
   };
 
-  // Daily tracking
+  // Track Today
   const trackToday = () => {
-    if (!todayCigarettes || !mood || !craving) {
-      alert("Fill all fields");
+    const value = Number(todayCigarettes);
+
+    if (!savedTarget) {
+      alert("Please set target first");
       return;
     }
 
-    const newEntry = {
+    if (value < 0 || value > 100) {
+      alert("Daily cigarettes must be between 0-100");
+      return;
+    }
+
+    const updatedHistory = [...history];
+
+    updatedHistory.push({
       date: new Date().toLocaleDateString(),
-      cigarettes: Number(todayCigarettes),
-      mood,
-      craving,
-    };
-
-    const updatedHistory = [...history, newEntry];
-
-    setHistory(updatedHistory);
+      cigarettes: value,
+    });
 
     localStorage.setItem("smokingHistory", JSON.stringify(updatedHistory));
 
-    // Achievement logic
-    if (Number(todayCigarettes) === 0) {
-      setMessage("🏆 Smoke-Free Day Achievement!");
-    } else if (Number(todayCigarettes) <= Number(target)) {
-      setMessage("🎯 Target Achieved!");
-    } else {
-      setMessage("Keep trying tomorrow 💪");
-    }
+    alert("Progress tracked successfully!");
 
     setTodayCigarettes("");
-    setMood("");
-    setCraving("");
   };
 
-  // Analytics
-  const totalCigs = history.reduce((sum, item) => sum + item.cigarettes, 0);
+  // Reset Data
+  const resetData = () => {
+    localStorage.removeItem("smokingHistory");
+    localStorage.removeItem("smokingTarget");
 
-  const average =
-    history.length > 0 ? (totalCigs / history.length).toFixed(1) : 0;
+    alert("All smoking data cleared!");
 
-  // Emergency help
+    setTarget("");
+    setTodayCigarettes("");
+  };
+
+  // Emergency Help
   const emergencyHelp = () => {
-    alert("Take deep breaths, drink water, go for a walk.");
+    alert(
+      "🚨 Emergency Help:\n\n" +
+        "• Drink water\n" +
+        "• Chew gum\n" +
+        "• Go for a walk\n" +
+        "• Call a friend\n" +
+        "• Avoid smoking triggers",
+    );
   };
+
+  // Progress Calculation
+  let progress = 0;
+  let status = "No Data";
+
+  if (latestRecord && savedTarget) {
+    progress = Math.max(
+      0,
+      (((savedTarget - latestRecord.cigarettes) / savedTarget) * 100).toFixed(
+        1,
+      ),
+    );
+
+    if (latestRecord.cigarettes <= savedTarget) {
+      status = "✅ Good";
+    } else if (latestRecord.cigarettes <= savedTarget + 5) {
+      status = "⚠ Warning";
+    } else {
+      status = "🚨 Critical";
+    }
+  }
 
   return (
     <div className="category-page">
-      <h2>🚬 Smoking Recovery Hub</h2>
+      <h2>🚬 Smoking Recovery</h2>
 
-      {/* Target Section */}
+      {/* Set Target */}
       <div className="card">
-        <h3>🎯 Weekly Target</h3>
+        <h3>🎯 Set Daily Target</h3>
 
-        <p>
-          Current Target:
-          {target ? `${target} cigarettes/day` : " Not Set"}
-        </p>
+        <input
+          type="number"
+          placeholder="Target cigarettes/day"
+          value={target}
+          onChange={(e) => setTarget(e.target.value)}
+        />
 
-        {showTargetInput ? (
-          <>
-            <input
-              type="number"
-              value={target}
-              onChange={(e) => setTarget(e.target.value)}
-              placeholder="Set target"
-            />
-
-            <button onClick={saveTarget}>Save Target</button>
-          </>
-        ) : (
-          <button onClick={() => setShowTargetInput(true)}>
-            Start Challenge
-          </button>
-        )}
+        <button onClick={saveTarget}>Save Target</button>
       </div>
 
-      {/* Daily Tracking */}
+      {/* Track Today */}
       <div className="card">
-        <h3>📊 Daily Tracking</h3>
+        <h3>📊 Track Today</h3>
 
         <input
           type="number"
           placeholder="Today's cigarettes"
           value={todayCigarettes}
           onChange={(e) => setTodayCigarettes(e.target.value)}
-        />
-
-        <input
-          type="number"
-          placeholder="Mood (1-10)"
-          value={mood}
-          onChange={(e) => setMood(e.target.value)}
-        />
-
-        <input
-          type="number"
-          placeholder="Craving (1-10)"
-          value={craving}
-          onChange={(e) => setCraving(e.target.value)}
         />
 
         <button onClick={trackToday}>Track Today</button>
@@ -146,43 +134,43 @@ function SmokingPage() {
       <div className="card">
         <h3>📈 Analytics</h3>
 
-        <p>
-          Days Tracked:
-          {history.length}
-        </p>
+        <p>Current Target: {savedTarget || "Not Set"}</p>
 
         <p>
-          Average Cigarettes/Day:
-          {average}
+          Latest Usage: {latestRecord ? latestRecord.cigarettes : "No Data"}
         </p>
+
+        <p>Progress: {progress}%</p>
+
+        <p>Status: {status}</p>
       </div>
 
       {/* History */}
       <div className="card">
-        <h3>📅 History</h3>
+        <h3>📅 Recent History</h3>
 
-        {history.map((item, index) => (
-          <div key={index}>
-            {item.date} —{item.cigarettes}
-            cigarettes | Mood:
-            {item.mood} | Craving:
-            {item.craving}
-          </div>
-        ))}
+        {history.length === 0 ? (
+          <p>No history found</p>
+        ) : (
+          history
+            .slice(-5)
+            .reverse()
+            .map((item, index) => (
+              <p key={index}>
+                {item.date} → {item.cigarettes} cigarettes
+              </p>
+            ))
+        )}
       </div>
 
-      {/* Emergency */}
+      {/* Actions */}
       <div className="card actions">
         <button onClick={emergencyHelp}>🚨 Emergency Help</button>
-      </div>
 
-      {/* Result */}
-      {message && (
-        <div className="card">
-          <h3>Status</h3>
-          <p>{message}</p>
-        </div>
-      )}
+        <button className="secondary" onClick={resetData}>
+          Reset Data
+        </button>
+      </div>
     </div>
   );
 }

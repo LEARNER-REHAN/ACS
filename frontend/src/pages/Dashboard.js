@@ -24,6 +24,7 @@ function Dashboard({ user, onLogout }) {
     let risk = "Low 🟢";
     let suggestion = "Keep going 👍";
 
+    // Risk Calculation
     if (usage > 5 || craving > 7) {
       risk = "High 🔴";
       suggestion = "Take a break, go outside.";
@@ -36,37 +37,131 @@ function Dashboard({ user, onLogout }) {
       suggestion += " Talk to a friend ❤️";
     }
 
-    setResult({ risk, suggestion, category });
+    // -----------------------------
+    // Save Check-in History
+    // -----------------------------
+    const history = JSON.parse(localStorage.getItem("history")) || [];
 
-    // 🔥 Redirect to category page
-    if (category === "Smoking") setPage("smoking");
-    else if (category === "Gaming") setPage("gaming");
-    else if (category === "Social Media") setPage("social");
-    else if (category === "Streaming") setPage("streaming");
-    else if (category === "Alcohol") setPage("alcohol");
+    const score = 10 - usage + (10 - craving) + mood;
+
+    const progress = Math.round((score / 30) * 100);
+
+    history.push({
+      date: new Date().toLocaleDateString(),
+      category,
+      usage,
+      craving,
+      mood,
+      progress,
+      risk,
+    });
+
+    localStorage.setItem("history", JSON.stringify(history));
+
+    // -----------------------------
+    // Overall Progress
+    // -----------------------------
+    let total = 0;
+
+    history.forEach((entry) => {
+      total += entry.progress;
+    });
+
+    const overallProgress = Math.round(total / history.length);
+
+    localStorage.setItem("overallProgress", overallProgress);
+
+    // -----------------------------
+    // Weekly Improvement
+    // -----------------------------
+    const previousProgress = Number(localStorage.getItem("progress")) || 0;
+
+    const improvement = progress - previousProgress;
+
+    localStorage.setItem("progress", progress);
+
+    localStorage.setItem("improvement", improvement);
+
+    // -----------------------------
+    // Streak Tracking
+    // -----------------------------
+    const today = new Date().toDateString();
+
+    const lastCheckIn = localStorage.getItem("lastCheckIn");
+
+    let streak = Number(localStorage.getItem("streak")) || 0;
+
+    if (!lastCheckIn) {
+      streak = 1;
+    } else {
+      const last = new Date(lastCheckIn);
+
+      const now = new Date(today);
+
+      const diff = Math.floor((now - last) / (1000 * 60 * 60 * 24));
+
+      if (diff === 1) {
+        streak++;
+      } else if (diff > 1) {
+        streak = 1;
+      }
+    }
+
+    localStorage.setItem("streak", streak);
+
+    localStorage.setItem("lastCheckIn", today);
+
+    localStorage.setItem("riskLevel", risk);
+
+    // -----------------------------
+    // Result Box
+    // -----------------------------
+    setResult({
+      risk,
+      suggestion,
+      category,
+    });
+
+    // -----------------------------
+    // Redirect to Category Page
+    // -----------------------------
+    if (category === "Smoking") {
+      setPage("smoking");
+    } else if (category === "Gaming") {
+      setPage("gaming");
+    } else if (category === "Social Media") {
+      setPage("social");
+    } else if (category === "Streaming") {
+      setPage("streaming");
+    } else if (category === "Alcohol") {
+      setPage("alcohol");
+    }
   };
 
   return (
     <div className="dashboard">
-      {/* NAVBAR */}
+      {/* Navbar */}
       <div className="navbar">
         <div className="nav-left">
           <div className="logo">ACS</div>
 
           <ul className="nav-links">
             <li onClick={() => setPage("home")}>🏠 Home</li>
+
             <li onClick={() => setPage("entry")}>🧠 Daily Check-In</li>
+
             <li onClick={() => setPage("about")}>About</li>
           </ul>
         </div>
 
         <div className="nav-right">
           <span>👋 {user?.username || "User"}</span>
+
           <button onClick={onLogout}>Logout</button>
         </div>
       </div>
 
-      {/* MAIN CONTENT */}
+      {/* Main Content */}
       <div className="main-content">
         {page === "home" && (
           <>
@@ -74,13 +169,16 @@ function Dashboard({ user, onLogout }) {
 
             {result && (
               <div className="result-box">
-                <h3>📊 Prediction</h3>
+                <h3>📊 Latest Prediction</h3>
+
                 <p>
                   <b>Category:</b> {result.category}
                 </p>
+
                 <p>
                   <b>{result.risk}</b>
                 </p>
+
                 <p>{result.suggestion}</p>
               </div>
             )}
@@ -88,13 +186,18 @@ function Dashboard({ user, onLogout }) {
         )}
 
         {page === "entry" && <DataEntry onAnalyze={analyzeData} />}
+
         {page === "about" && <About />}
 
-        {/* CATEGORY PAGES */}
+        {/* Category Pages */}
         {page === "smoking" && <SmokingPage />}
+
         {page === "gaming" && <GamingPage />}
+
         {page === "social" && <SocialMediaPage />}
+
         {page === "streaming" && <StreamingPage />}
+
         {page === "alcohol" && <AlcoholPage />}
       </div>
     </div>

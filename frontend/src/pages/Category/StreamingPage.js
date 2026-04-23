@@ -1,157 +1,114 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "../../styles/CategoryPage.css";
 
 function StreamingPage() {
-  const [target, setTarget] = useState(
-    localStorage.getItem("streamingTarget") || "",
-  );
+  const [target, setTarget] = useState("");
+  const [todayHours, setTodayHours] = useState("");
 
-  const [watchHours, setWatchHours] = useState("");
-  const [mood, setMood] = useState("");
-  const [urge, setUrge] = useState("");
-  const [history, setHistory] = useState([]);
-  const [message, setMessage] = useState("");
+  const savedTarget = Number(localStorage.getItem("streamingTarget"));
+  const history = JSON.parse(localStorage.getItem("streamingHistory")) || [];
 
-  useEffect(() => {
-    const saved = JSON.parse(localStorage.getItem("streamingHistory")) || [];
-
-    setHistory(saved);
-  }, []);
+  const latest = history.length > 0 ? history[history.length - 1] : null;
 
   const saveTarget = () => {
-    if (!target) {
-      alert("Enter target hours");
+    const value = Number(target);
+
+    if (!value || value <= 0 || value > 24) {
+      alert("Target must be 1-24 hrs");
       return;
     }
 
-    localStorage.setItem("streamingTarget", target);
-
-    setMessage(`🎯 Target set: ${target} hrs/day`);
+    localStorage.setItem("streamingTarget", value);
+    alert("Target saved!");
+    setTarget("");
   };
 
   const trackToday = () => {
-    if (!watchHours || !mood || !urge) {
-      alert("Fill all fields");
+    const value = Number(todayHours);
+
+    if (!savedTarget) {
+      alert("Set target first");
       return;
     }
 
-    const entry = {
+    if (value < 0 || value > 24) {
+      alert("Hours must be 0-24");
+      return;
+    }
+
+    const updated = [...history];
+    updated.push({
       date: new Date().toLocaleDateString(),
-      hours: Number(watchHours),
-      mood,
-      urge,
-    };
-
-    const updated = [...history, entry];
-
-    setHistory(updated);
+      hours: value,
+    });
 
     localStorage.setItem("streamingHistory", JSON.stringify(updated));
 
-    if (Number(watchHours) <= Number(target)) {
-      setMessage("🎉 Great! Streaming target achieved!");
-    } else {
-      setMessage("Try reducing binge watching tomorrow 💪");
-    }
-
-    setWatchHours("");
-    setMood("");
-    setUrge("");
+    alert("Tracked!");
+    setTodayHours("");
   };
 
-  const totalHours = history.reduce((sum, item) => sum + item.hours, 0);
+  const avg =
+    history.length > 0
+      ? (history.reduce((a, b) => a + b.hours, 0) / history.length).toFixed(1)
+      : 0;
 
-  const average =
-    history.length > 0 ? (totalHours / history.length).toFixed(1) : 0;
+  const best =
+    history.length > 0 ? Math.min(...history.map((h) => h.hours)) : 0;
 
-  const emergencyHelp = () => {
-    alert("Take a break, go outside, read a book, avoid binge watching.");
+  const worst =
+    history.length > 0 ? Math.max(...history.map((h) => h.hours)) : 0;
+
+  const streak = history.filter((h) => h.hours <= savedTarget).length;
+
+  const exportHistory = () => {
+    const blob = new Blob([JSON.stringify(history, null, 2)], {
+      type: "application/json",
+    });
+
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "streaming-history.json";
+    a.click();
   };
 
   return (
     <div className="category-page">
       <h2>📺 Streaming Recovery</h2>
 
-      {/* Target */}
       <div className="card">
-        <h3>🎯 Set Target</h3>
-
+        <h3>Set Target</h3>
         <input
           type="number"
-          placeholder="Target watch hours/day"
           value={target}
           onChange={(e) => setTarget(e.target.value)}
         />
-
         <button onClick={saveTarget}>Save Target</button>
       </div>
 
-      {/* Daily Tracking */}
       <div className="card">
-        <h3>📊 Track Today</h3>
-
+        <h3>Track Today</h3>
         <input
           type="number"
-          placeholder="Today's watch hours"
-          value={watchHours}
-          onChange={(e) => setWatchHours(e.target.value)}
+          value={todayHours}
+          onChange={(e) => setTodayHours(e.target.value)}
         />
-
-        <input
-          type="number"
-          placeholder="Mood (1-10)"
-          value={mood}
-          onChange={(e) => setMood(e.target.value)}
-        />
-
-        <input
-          type="number"
-          placeholder="Urge (1-10)"
-          value={urge}
-          onChange={(e) => setUrge(e.target.value)}
-        />
-
-        <button onClick={trackToday}>Track Today</button>
+        <button onClick={trackToday}>Track</button>
       </div>
 
-      {/* Analytics */}
       <div className="card">
-        <h3>📈 Analytics</h3>
-
-        <p>
-          Days Tracked:
-          {history.length}
-        </p>
-
-        <p>
-          Average Watch Hours:
-          {average}
-        </p>
+        <h3>Analytics</h3>
+        <p>Average: {avg} hrs</p>
+        <p>Best Day: {best} hrs</p>
+        <p>Worst Day: {worst} hrs</p>
+        <p>Streak: {streak} days</p>
       </div>
 
-      {/* History */}
-      <div className="card">
-        <h3>📅 History</h3>
-
-        {history.map((item, index) => (
-          <div key={index}>
-            {item.date} —{item.hours} hrs | Mood: {item.mood}| Urge:
-            {item.urge}
-          </div>
-        ))}
-      </div>
-
-      {/* Emergency */}
       <div className="card actions">
-        <button onClick={emergencyHelp}>🚨 Emergency Help</button>
+        <button onClick={exportHistory}>Export History</button>
       </div>
-
-      {message && (
-        <div className="card">
-          <h3>Status</h3>
-          <p>{message}</p>
-        </div>
-      )}
     </div>
   );
 }
