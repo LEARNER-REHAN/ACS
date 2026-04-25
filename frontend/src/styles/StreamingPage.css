@@ -1,0 +1,131 @@
+/* Full page layout */
+.streaming-page {
+  padding: 40px;
+  min-height: 100vh;
+  background: #f5f7fb;
+  font-family: "Inter", sans-serif;
+}
+
+/* Page heading */
+.streaming-title {
+  text-align: center;
+  font-size: 38px;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 40px;
+}
+
+/* Card layout */
+.streaming-card {
+  background: white;
+  padding: 30px;
+  border-radius: 20px;
+  margin-bottom: 30px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+}
+
+/* Card headings */
+.streaming-card h2 {
+  font-size: 24px;
+  color: #1e293b;
+  margin-bottom: 20px;
+}
+
+/* Input field */
+.streaming-input {
+  width: 100%;
+  padding: 14px;
+  border: 2px solid #dbeafe;
+  border-radius: 12px;
+  font-size: 16px;
+  outline: none;
+  margin-bottom: 20px;
+}
+
+.streaming-input:focus {
+  border-color: #2563eb;
+}
+
+/* Save button */
+.streaming-btn {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(90deg, #2563eb, #7c3aed);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.streaming-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
+}
+
+/* Usage rows */
+.usage-item {
+  background: #f8fafc;
+  padding: 18px;
+  border-radius: 12px;
+  margin-bottom: 15px;
+  font-size: 20px;
+  font-weight: 600;
+  color: #334155;
+}
+
+/* Total section */
+.total-usage {
+  margin-top: 25px;
+  font-size: 28px;
+  font-weight: bold;
+  color: #2563eb;
+}
+
+/* Warning section */
+.warning {
+  margin-top: 20px;
+  padding: 18px;
+  border-radius: 12px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.warning.success {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.warning.danger {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+/* Analytics section */
+.analytics-item {
+  font-size: 22px;
+  font-weight: 600;
+  color: #2563eb;
+  margin-bottom: 15px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .streaming-page {
+    padding: 20px;
+  }
+
+  .streaming-title {
+    font-size: 28px;
+  }
+
+  .usage-item {
+    font-size: 16px;
+  }
+
+  .total-usage {
+    font-size: 22px;
+  }
+}

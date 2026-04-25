@@ -1,34 +1,55 @@
+import React from "react";
+import { useNavigate } from "react-router-dom";
 import "../styles/landing.css";
-import { Link } from "react-router-dom";
 
 function Landing() {
-  return (
-    <div className="landing">
-      <nav className="navbar">
-        <h2 className="logo">Addiction Monitor</h2>
+  const navigate = useNavigate();
 
-        {/* 👇 Middle Menu */}
-        <div className="nav-links">
-          <a href="#">Features</a>
-          <a href="#">About</a>
-          <a href="#">Contact</a>
+  return (
+    <div className="landing-page">
+      {/* Navbar */}
+      <div className="landing-navbar">
+        <div className="landing-logo">
+          Addiction <br />
+          Monitor
         </div>
 
-        <Link to="/login" className="login-btn">
+        <button className="nav-login-btn" onClick={() => navigate("/login")}>
           Login
-        </Link>
-      </nav>
+        </button>
+      </div>
 
-      <div className="hero">
-        <h1>Track. Understand. Overcome.</h1>
-        <p>
-          Monitor your habits, detect patterns, and get personalized
-          recommendations to improve your life.
-        </p>
+      {/* Hero Section */}
+      <div className="hero-section">
+        {/* Left Side */}
+        <div className="hero-left">
+          <h1>Track. Understand. Overcome.</h1>
 
-        <Link to="/login" className="start-btn">
-          Get Started
-        </Link>
+          <p>
+            Monitor your habits, detect addiction patterns, and receive smart
+            recovery recommendations to build a healthier lifestyle.
+          </p>
+
+          <button className="hero-btn" onClick={() => navigate("/register")}>
+            Get Started
+          </button>
+        </div>
+
+        {/* Right Side */}
+        <div className="hero-right">
+          <div className="hero-card">
+            <h3>Your Recovery Features</h3>
+
+            <ul>
+              <li>✅ Addiction Tracking</li>
+              <li>✅ AI Risk Prediction</li>
+              <li>✅ Daily Habit Monitoring</li>
+              <li>✅ Recovery Progress Reports</li>
+              <li>✅ Emergency Support</li>
+              <li>✅ Personalized Recovery Plans</li>
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
   );

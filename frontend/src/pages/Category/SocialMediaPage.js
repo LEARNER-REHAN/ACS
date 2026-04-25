@@ -1,157 +1,80 @@
-import React, { useState } from "react";
-import "../../styles/CategoryPage.css";
+import React, { useEffect, useState } from "react";
+import "../../styles/SocialMediaPage.css";
 
 function SocialMediaPage() {
-  const [target, setTarget] = useState("");
-  const [todayUsage, setTodayUsage] = useState("");
-  const [mood, setMood] = useState("");
-  const [urge, setUrge] = useState("");
+  const [usageData, setUsageData] = useState({
+    youtube: 0,
+    instagram: 0,
+    facebook: 0,
+    twitter: 0,
+  });
 
-  // Get saved target safely
-  const savedTarget = Number(localStorage.getItem("socialTarget"));
+  // Convert seconds → real-time format
+  const formatTime = (seconds) => {
+    const hrs = Math.floor(seconds / 3600);
+    const mins = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
 
-  // Save Target
-  const saveTarget = () => {
-    if (!target) {
-      alert("Please enter a target");
-      return;
+    if (hrs > 0) {
+      return `${hrs}h ${mins}m ${secs}s`;
     }
 
-    const targetValue = Number(target);
-
-    if (targetValue <= 0 || targetValue > 24) {
-      alert("Target must be between 1 and 24 hours");
-      return;
+    if (mins > 0) {
+      return `${mins}m ${secs}s`;
     }
 
-    localStorage.setItem("socialTarget", targetValue);
-
-    alert("Target saved successfully!");
-
-    setTarget("");
+    return `${secs}s`;
   };
 
-  // Track Today's Usage
-  const trackToday = () => {
-    if (!todayUsage || !mood || !urge) {
-      alert("Please fill all fields");
-      return;
-    }
+  useEffect(() => {
+    const fetchUsageData = () => {
+      const data = JSON.parse(localStorage.getItem("socialUsageData")) || {
+        youtube: 0,
+        instagram: 0,
+        facebook: 0,
+        twitter: 0,
+      };
 
-    const usageValue = Number(todayUsage);
+      setUsageData(data);
+    };
 
-    const moodValue = Number(mood);
+    // Initial fetch
+    fetchUsageData();
 
-    const urgeValue = Number(urge);
+    // Update every second for real-time feel
+    const interval = setInterval(() => {
+      fetchUsageData();
+    }, 1000);
 
-    if (usageValue < 0 || usageValue > 24) {
-      alert("Screen time must be between 0 and 24 hours");
-      return;
-    }
+    return () => clearInterval(interval);
+  }, []);
 
-    if (moodValue < 1 || moodValue > 10) {
-      alert("Mood must be between 1 and 10");
-      return;
-    }
-
-    if (urgeValue < 1 || urgeValue > 10) {
-      alert("Urge must be between 1 and 10");
-      return;
-    }
-
-    if (!savedTarget || savedTarget > 24) {
-      alert("Please set a valid target first");
-      return;
-    }
-
-    const history = JSON.parse(localStorage.getItem("socialHistory")) || [];
-
-    history.push({
-      date: new Date().toLocaleDateString(),
-      usage: usageValue,
-      mood: moodValue,
-      urge: urgeValue,
-    });
-
-    localStorage.setItem("socialHistory", JSON.stringify(history));
-
-    alert("Today's progress tracked successfully!");
-
-    setTodayUsage("");
-    setMood("");
-    setUrge("");
-  };
-
-  // Emergency Help
-  const emergencyHelp = () => {
-    alert(
-      "🚨 Emergency Tips:\n\n" +
-        "• Turn off notifications\n" +
-        "• Keep phone away\n" +
-        "• Go outside\n" +
-        "• Talk to friends/family\n" +
-        "• Read a book",
-    );
-  };
+  const totalSeconds =
+    usageData.youtube +
+    usageData.instagram +
+    usageData.facebook +
+    usageData.twitter;
 
   return (
-    <div className="category-page">
-      <h2>📱 Social Media Recovery</h2>
+    <div className="social-page">
+      <h1>📱 Automatic Social Media Tracker</h1>
 
-      {/* Target Section */}
-      <div className="card">
-        <h3>🎯 Set Target</h3>
+      <div className="social-card">
+        <h2>Live Browser Tracking</h2>
 
-        <input
-          type="number"
-          placeholder="Target hrs/day"
-          value={target}
-          onChange={(e) => setTarget(e.target.value)}
-        />
+        <h3>Total Usage Today: {formatTime(totalSeconds)}</h3>
 
-        <button onClick={saveTarget}>Save Target</button>
+        <div className="platform-stats">
+          <p>📺 YouTube: {formatTime(usageData.youtube)}</p>
+          <p>📸 Instagram: {formatTime(usageData.instagram)}</p>
+          <p>📘 Facebook: {formatTime(usageData.facebook)}</p>
+          <p>🐦 Twitter/X: {formatTime(usageData.twitter)}</p>
+        </div>
+
+        <div className="status-box">
+          ✅ Real-time automatic tracking working
+        </div>
       </div>
-
-      {/* Track Section */}
-      <div className="card">
-        <h3>📊 Track Today</h3>
-
-        <input
-          type="number"
-          placeholder="Today's screen time"
-          value={todayUsage}
-          onChange={(e) => setTodayUsage(e.target.value)}
-        />
-
-        <input
-          type="number"
-          placeholder="Mood (1-10)"
-          value={mood}
-          onChange={(e) => setMood(e.target.value)}
-        />
-
-        <input
-          type="number"
-          placeholder="Urge (1-10)"
-          value={urge}
-          onChange={(e) => setUrge(e.target.value)}
-        />
-
-        <button onClick={trackToday}>Track Today</button>
-      </div>
-
-      {/* Emergency Help */}
-      <div className="card">
-        <button onClick={emergencyHelp}>🚨 Emergency Help</button>
-      </div>
-
-      {/* Current Target */}
-      <p>
-        🎯 Current Target:{" "}
-        {savedTarget > 0 && savedTarget <= 24
-          ? `${savedTarget} hrs/day`
-          : "Not Set"}
-      </p>
     </div>
   );
 }

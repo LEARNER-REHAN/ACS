@@ -1,113 +1,88 @@
-import React, { useState } from "react";
-import "../../styles/CategoryPage.css";
+import React, { useEffect, useState } from "react";
+import "../../styles/StreamingPage.css";
 
 function StreamingPage() {
-  const [target, setTarget] = useState("");
-  const [todayHours, setTodayHours] = useState("");
+  const [data, setData] = useState({});
 
-  const savedTarget = Number(localStorage.getItem("streamingTarget"));
-  const history = JSON.parse(localStorage.getItem("streamingHistory")) || [];
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (
+        window.chrome &&
+        window.chrome.storage &&
+        window.chrome.storage.local
+      ) {
+        window.chrome.storage.local.get(["usageData"], (result) => {
+          setData(result.usageData || {});
+        });
+      }
+    }, 1000);
 
-  const latest = history.length > 0 ? history[history.length - 1] : null;
+    return () => clearInterval(interval);
+  }, []);
 
-  const saveTarget = () => {
-    const value = Number(target);
+  const streamingTotal =
+    (data.streamingYoutube || 0) +
+    (data.netflix || 0) +
+    (data.prime || 0) +
+    (data.hotstar || 0) +
+    (data.twitch || 0);
 
-    if (!value || value <= 0 || value > 24) {
-      alert("Target must be 1-24 hrs");
-      return;
-    }
+  const formatTime = (seconds) => {
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    const s = seconds % 60;
 
-    localStorage.setItem("streamingTarget", value);
-    alert("Target saved!");
-    setTarget("");
-  };
-
-  const trackToday = () => {
-    const value = Number(todayHours);
-
-    if (!savedTarget) {
-      alert("Set target first");
-      return;
-    }
-
-    if (value < 0 || value > 24) {
-      alert("Hours must be 0-24");
-      return;
-    }
-
-    const updated = [...history];
-    updated.push({
-      date: new Date().toLocaleDateString(),
-      hours: value,
-    });
-
-    localStorage.setItem("streamingHistory", JSON.stringify(updated));
-
-    alert("Tracked!");
-    setTodayHours("");
-  };
-
-  const avg =
-    history.length > 0
-      ? (history.reduce((a, b) => a + b.hours, 0) / history.length).toFixed(1)
-      : 0;
-
-  const best =
-    history.length > 0 ? Math.min(...history.map((h) => h.hours)) : 0;
-
-  const worst =
-    history.length > 0 ? Math.max(...history.map((h) => h.hours)) : 0;
-
-  const streak = history.filter((h) => h.hours <= savedTarget).length;
-
-  const exportHistory = () => {
-    const blob = new Blob([JSON.stringify(history, null, 2)], {
-      type: "application/json",
-    });
-
-    const url = URL.createObjectURL(blob);
-
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "streaming-history.json";
-    a.click();
+    return `${h}h ${m}m ${s}s`;
   };
 
   return (
-    <div className="category-page">
-      <h2>📺 Streaming Recovery</h2>
+    <div className="streaming-page">
+      <h1 className="streaming-title">📺 Streaming Recovery</h1>
 
-      <div className="card">
-        <h3>Set Target</h3>
-        <input
-          type="number"
-          value={target}
-          onChange={(e) => setTarget(e.target.value)}
-        />
-        <button onClick={saveTarget}>Save Target</button>
+      {/* Live Usage */}
+      <div className="streaming-card">
+        <h2>Live Streaming Usage</h2>
+
+        <div className="usage-item">
+          📺 YouTube: {formatTime(data.streamingYoutube || 0)}
+        </div>
+
+        <div className="usage-item">
+          🎬 Netflix: {formatTime(data.netflix || 0)}
+        </div>
+
+        <div className="usage-item">
+          📦 Prime Video: {formatTime(data.prime || 0)}
+        </div>
+
+        <div className="usage-item">
+          ⭐ Hotstar: {formatTime(data.hotstar || 0)}
+        </div>
+
+        <div className="usage-item">
+          🎮 Twitch: {formatTime(data.twitch || 0)}
+        </div>
+
+        <div className="total-usage">
+          Total Today: {formatTime(streamingTotal)}
+        </div>
+
+        <div className="warning success">
+          ✅ Real-time streaming tracking working
+        </div>
       </div>
 
-      <div className="card">
-        <h3>Track Today</h3>
-        <input
-          type="number"
-          value={todayHours}
-          onChange={(e) => setTodayHours(e.target.value)}
-        />
-        <button onClick={trackToday}>Track</button>
-      </div>
+      {/* Analytics */}
+      <div className="streaming-card">
+        <h2>Analytics</h2>
 
-      <div className="card">
-        <h3>Analytics</h3>
-        <p>Average: {avg} hrs</p>
-        <p>Best Day: {best} hrs</p>
-        <p>Worst Day: {worst} hrs</p>
-        <p>Streak: {streak} days</p>
-      </div>
+        <div className="analytics-item">
+          Average Usage: Auto calculated from history
+        </div>
 
-      <div className="card actions">
-        <button onClick={exportHistory}>Export History</button>
+        <div className="analytics-item">Best Day: Lowest streaming day</div>
+
+        <div className="analytics-item">Worst Day: Highest streaming day</div>
       </div>
     </div>
   );

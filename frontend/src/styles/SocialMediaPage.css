@@ -1,0 +1,92 @@
+/* Full page layout */
+.social-page {
+  margin-left: 260px;
+  min-height: 100vh;
+  padding: 40px;
+  background: #f4f7fb;
+  font-family: "Inter", sans-serif;
+}
+
+/* Page heading */
+.social-page h1 {
+  font-size: 38px;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 30px;
+}
+
+/* Main tracking card */
+.social-card {
+  background: white;
+  width: 70%;
+  padding: 35px;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+/* Card heading */
+.social-card h2 {
+  font-size: 28px;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 25px;
+}
+
+/* Total usage */
+.social-card h3 {
+  font-size: 34px;
+  color: #2563eb;
+  margin-bottom: 30px;
+}
+
+/* Platform stats */
+.platform-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.platform-stats p {
+  font-size: 26px;
+  font-weight: 600;
+  color: #334155;
+  background: #f8fafc;
+  padding: 18px;
+  border-radius: 12px;
+}
+
+/* Status box */
+.status-box {
+  margin-top: 30px;
+  background: #dcfce7;
+  color: #15803d;
+  padding: 18px;
+  border-radius: 12px;
+  font-size: 22px;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .social-page {
+    margin-left: 0;
+    padding: 20px;
+  }
+
+  .social-card {
+    width: 100%;
+  }
+
+  .social-page h1 {
+    font-size: 28px;
+  }
+
+  .social-card h3 {
+    font-size: 24px;
+  }
+
+  .platform-stats p {
+    font-size: 18px;
+  }
+}

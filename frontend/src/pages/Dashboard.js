@@ -21,29 +21,25 @@ function Dashboard({ user, onLogout }) {
     const mood = Number(data.mood);
     const category = data.category;
 
-    let risk = "Low 🟢";
-    let suggestion = "Keep going 👍";
+    let risk = "Low";
+    let suggestion = "Keep going";
 
-    // Risk Calculation
     if (usage > 5 || craving > 7) {
-      risk = "High 🔴";
-      suggestion = "Take a break, go outside.";
+      risk = "High";
+      suggestion = "Take a break and go outside.";
     } else if (usage > 3 || craving > 4) {
-      risk = "Medium 🟡";
-      suggestion = "Try meditation.";
+      risk = "Medium";
+      suggestion = "Try meditation or relaxation.";
     }
 
     if (mood < 4) {
-      suggestion += " Talk to a friend ❤️";
+      suggestion += " Talk to a friend.";
     }
 
-    // -----------------------------
-    // Save Check-in History
-    // -----------------------------
+    // Save history
     const history = JSON.parse(localStorage.getItem("history")) || [];
 
     const score = 10 - usage + (10 - craving) + mood;
-
     const progress = Math.round((score / 30) * 100);
 
     history.push({
@@ -58,35 +54,25 @@ function Dashboard({ user, onLogout }) {
 
     localStorage.setItem("history", JSON.stringify(history));
 
-    // -----------------------------
     // Overall Progress
-    // -----------------------------
     let total = 0;
-
     history.forEach((entry) => {
       total += entry.progress;
     });
 
     const overallProgress = Math.round(total / history.length);
-
     localStorage.setItem("overallProgress", overallProgress);
 
-    // -----------------------------
-    // Weekly Improvement
-    // -----------------------------
+    // Weekly improvement
     const previousProgress = Number(localStorage.getItem("progress")) || 0;
 
     const improvement = progress - previousProgress;
 
     localStorage.setItem("progress", progress);
-
     localStorage.setItem("improvement", improvement);
 
-    // -----------------------------
-    // Streak Tracking
-    // -----------------------------
+    // Streak
     const today = new Date().toDateString();
-
     const lastCheckIn = localStorage.getItem("lastCheckIn");
 
     let streak = Number(localStorage.getItem("streak")) || 0;
@@ -95,7 +81,6 @@ function Dashboard({ user, onLogout }) {
       streak = 1;
     } else {
       const last = new Date(lastCheckIn);
-
       const now = new Date(today);
 
       const diff = Math.floor((now - last) / (1000 * 60 * 60 * 24));
@@ -108,56 +93,60 @@ function Dashboard({ user, onLogout }) {
     }
 
     localStorage.setItem("streak", streak);
-
     localStorage.setItem("lastCheckIn", today);
-
     localStorage.setItem("riskLevel", risk);
 
-    // -----------------------------
-    // Result Box
-    // -----------------------------
     setResult({
       risk,
       suggestion,
       category,
     });
 
-    // -----------------------------
-    // Redirect to Category Page
-    // -----------------------------
-    if (category === "Smoking") {
-      setPage("smoking");
-    } else if (category === "Gaming") {
-      setPage("gaming");
-    } else if (category === "Social Media") {
-      setPage("social");
-    } else if (category === "Streaming") {
-      setPage("streaming");
-    } else if (category === "Alcohol") {
-      setPage("alcohol");
-    }
+    // Redirect category page
+    if (category === "Smoking") setPage("smoking");
+    else if (category === "Gaming") setPage("gaming");
+    else if (category === "Social Media") setPage("social");
+    else if (category === "Streaming") setPage("streaming");
+    else if (category === "Alcohol") setPage("alcohol");
   };
 
   return (
     <div className="dashboard">
-      {/* Navbar */}
+      {/* Sidebar */}
       <div className="navbar">
-        <div className="nav-left">
+        <div>
           <div className="logo">ACS</div>
 
           <ul className="nav-links">
-            <li onClick={() => setPage("home")}>🏠 Home</li>
+            <li
+              className={page === "home" ? "active" : ""}
+              onClick={() => setPage("home")}
+            >
+              Home
+            </li>
 
-            <li onClick={() => setPage("entry")}>🧠 Daily Check-In</li>
+            <li
+              className={page === "entry" ? "active" : ""}
+              onClick={() => setPage("entry")}
+            >
+              Daily Check-In
+            </li>
 
-            <li onClick={() => setPage("about")}>About</li>
+            <li
+              className={page === "about" ? "active" : ""}
+              onClick={() => setPage("about")}
+            >
+              About
+            </li>
           </ul>
         </div>
 
-        <div className="nav-right">
-          <span>👋 {user?.username || "User"}</span>
+        <div className="nav-bottom">
+          <span className="welcome">{user?.username || "User"}</span>
 
-          <button onClick={onLogout}>Logout</button>
+          <button className="logout-btn" onClick={onLogout}>
+            Logout
+          </button>
         </div>
       </div>
 
@@ -165,18 +154,18 @@ function Dashboard({ user, onLogout }) {
       <div className="main-content">
         {page === "home" && (
           <>
-            <Home />
+            <Home setPage={setPage} />
 
             {result && (
               <div className="result-box">
-                <h3>📊 Latest Prediction</h3>
+                <h3>Latest Prediction</h3>
 
                 <p>
-                  <b>Category:</b> {result.category}
+                  <strong>Category:</strong> {result.category}
                 </p>
 
                 <p>
-                  <b>{result.risk}</b>
+                  <strong>Risk:</strong> {result.risk}
                 </p>
 
                 <p>{result.suggestion}</p>
@@ -189,15 +178,10 @@ function Dashboard({ user, onLogout }) {
 
         {page === "about" && <About />}
 
-        {/* Category Pages */}
         {page === "smoking" && <SmokingPage />}
-
         {page === "gaming" && <GamingPage />}
-
         {page === "social" && <SocialMediaPage />}
-
         {page === "streaming" && <StreamingPage />}
-
         {page === "alcohol" && <AlcoholPage />}
       </div>
     </div>
