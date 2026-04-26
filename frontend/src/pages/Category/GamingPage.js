@@ -1,180 +1,75 @@
-import React, { useState } from "react";
-import "../../styles/CategoryPage.css";
+import React, { useEffect, useState } from "react";
+import "../../styles/GamingPage.css";
 
 function GamingPage() {
-  const [target, setTarget] = useState("");
-  const [todayHours, setTodayHours] = useState("");
+  const [gamingData, setGamingData] = useState({
+    roblox: 0,
+    chess: 0,
+    poki: 0,
+    crazygames: 0,
+    miniclip: 0,
+    steam: 0,
+  });
 
-  const savedTarget = Number(localStorage.getItem("gamingTarget"));
+  const formatTime = (seconds) => {
+    const hrs = Math.floor(seconds / 3600);
+    const mins = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
 
-  const history = JSON.parse(localStorage.getItem("gamingHistory")) || [];
+    if (hrs > 0) return `${hrs}h ${mins}m ${secs}s`;
+    if (mins > 0) return `${mins}m ${secs}s`;
 
-  const latestRecord = history.length > 0 ? history[history.length - 1] : null;
-
-  // Save Target
-  const saveTarget = () => {
-    const value = Number(target);
-
-    if (!value || value <= 0 || value > 24) {
-      alert("Target must be between 1-24 hours");
-      return;
-    }
-
-    localStorage.setItem("gamingTarget", value);
-    alert("Target saved!");
-    setTarget("");
+    return `${secs}s`;
   };
 
-  // Track Today
-  const trackToday = () => {
-    const value = Number(todayHours);
+  useEffect(() => {
+    const fetchGamingData = () => {
+      const data = JSON.parse(localStorage.getItem("gamingUsageData")) || {
+        roblox: 0,
+        chess: 0,
+        poki: 0,
+        crazygames: 0,
+        miniclip: 0,
+        steam: 0,
+      };
 
-    if (!savedTarget) {
-      alert("Set target first");
-      return;
-    }
+      setGamingData(data);
+    };
 
-    if (value < 0 || value > 24) {
-      alert("Gaming hours must be between 0-24");
-      return;
-    }
+    fetchGamingData();
 
-    const updated = [...history];
+    const interval = setInterval(() => {
+      fetchGamingData();
+    }, 1000);
 
-    updated.push({
-      date: new Date().toLocaleDateString(),
-      hours: value,
-    });
+    return () => clearInterval(interval);
+  }, []);
 
-    localStorage.setItem("gamingHistory", JSON.stringify(updated));
-
-    alert("Progress tracked!");
-    setTodayHours("");
-  };
-
-  // Weekly Average
-  const totalHours = history.reduce((sum, item) => sum + item.hours, 0);
-
-  const avgHours =
-    history.length > 0 ? (totalHours / history.length).toFixed(1) : 0;
-
-  // Best Day
-  const bestDay =
-    history.length > 0 ? Math.min(...history.map((item) => item.hours)) : 0;
-
-  // Worst Day
-  const worstDay =
-    history.length > 0 ? Math.max(...history.map((item) => item.hours)) : 0;
-
-  // Streak
-  const streak = history.filter((item) => item.hours <= savedTarget).length;
-
-  // Relapse Detection
-  const relapse =
-    latestRecord && latestRecord.hours > savedTarget
-      ? "⚠ Relapse Detected"
-      : "✅ Stable";
-
-  // Achievement Badge
-  let badge = "Beginner";
-
-  if (streak >= 30) {
-    badge = "🏆 Champion";
-  } else if (streak >= 15) {
-    badge = "🥇 Warrior";
-  } else if (streak >= 7) {
-    badge = "🔥 Consistent";
-  }
-
-  // Export History
-  const exportHistory = () => {
-    const data = JSON.stringify(history, null, 2);
-
-    const blob = new Blob([data], {
-      type: "application/json",
-    });
-
-    const url = URL.createObjectURL(blob);
-
-    const a = document.createElement("a");
-
-    a.href = url;
-    a.download = "gaming-history.json";
-    a.click();
-  };
+  const total =
+    gamingData.roblox +
+    gamingData.chess +
+    gamingData.poki +
+    gamingData.crazygames +
+    gamingData.miniclip +
+    gamingData.steam;
 
   return (
-    <div className="category-page">
-      <h2>🎮 Gaming Recovery</h2>
+    <div className="gaming-page">
+      <h1>🎮 Gaming Tracker</h1>
 
-      <div className="card">
-        <h3>🎯 Set Target</h3>
-        <input
-          type="number"
-          value={target}
-          onChange={(e) => setTarget(e.target.value)}
-        />
-        <button onClick={saveTarget}>Save Target</button>
-      </div>
+      <div className="gaming-card">
+        <h2>Live Gaming Usage</h2>
 
-      <div className="card">
-        <h3>📊 Track Today</h3>
-        <input
-          type="number"
-          value={todayHours}
-          onChange={(e) => setTodayHours(e.target.value)}
-        />
-        <button onClick={trackToday}>Track Today</button>
-      </div>
+        <p>🎲 Roblox: {formatTime(gamingData.roblox)}</p>
+        <p>♟ Chess.com: {formatTime(gamingData.chess)}</p>
+        <p>🕹 Poki: {formatTime(gamingData.poki)}</p>
+        <p>🔥 CrazyGames: {formatTime(gamingData.crazygames)}</p>
+        <p>🎯 Miniclip: {formatTime(gamingData.miniclip)}</p>
+        <p>🎮 Steam: {formatTime(gamingData.steam)}</p>
 
-      <div className="card">
-        <h3>📈 Advanced Analytics</h3>
+        <h3>Total Today: {formatTime(total)}</h3>
 
-        <p>
-          Weekly Average:
-          {avgHours} hrs
-        </p>
-
-        <p>
-          Best Day:
-          {bestDay} hrs
-        </p>
-
-        <p>
-          Worst Day:
-          {worstDay} hrs
-        </p>
-
-        <p>
-          Success Streak:
-          {streak} days
-        </p>
-
-        <p>
-          Status:
-          {relapse}
-        </p>
-
-        <p>
-          Badge:
-          {badge}
-        </p>
-      </div>
-
-      <div className="card">
-        <h3>💡 Recommendation</h3>
-
-        <p>
-          {latestRecord && latestRecord.hours > savedTarget
-            ? "Reduce gaming by replacing it with outdoor activities."
-            : "Great work! Keep maintaining balance."}
-        </p>
-      </div>
-
-      <div className="card actions">
-        <button onClick={exportHistory}>Export History</button>
-
-        <button>Motivational Quote</button>
+        <div className="status-box">✅ Real-time gaming tracking working</div>
       </div>
     </div>
   );

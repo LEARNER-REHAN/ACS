@@ -1,0 +1,98 @@
+/* Full page */
+.gaming-page {
+  min-height: 100vh;
+  padding: 40px;
+  background: #f4f7fb;
+  font-family: "Inter", sans-serif;
+}
+
+/* Title */
+.gaming-page h1 {
+  font-size: 36px;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 30px;
+}
+
+/* Main card */
+.gaming-card {
+  background: white;
+  width: 70%;
+  padding: 35px;
+  border-radius: 20px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+/* Card heading */
+.gaming-card h2 {
+  font-size: 28px;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 25px;
+}
+
+/* Individual game rows */
+.gaming-card p {
+  background: #f8fafc;
+  padding: 16px 20px;
+  margin-bottom: 15px;
+  border-radius: 12px;
+  font-size: 20px;
+  font-weight: 600;
+  color: #334155;
+}
+
+/* Total usage */
+.gaming-card h3 {
+  margin-top: 25px;
+  font-size: 28px;
+  font-weight: bold;
+  color: #2563eb;
+}
+
+/* Status box */
+.status-box {
+  margin-top: 25px;
+  padding: 18px;
+  background: #dcfce7;
+  color: #15803d;
+  border-radius: 12px;
+  font-size: 18px;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* Hover effect */
+.gaming-card p:hover {
+  transform: translateY(-2px);
+  transition: 0.3s;
+  background: #e0f2fe;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .gaming-page {
+    padding: 20px;
+  }
+
+  .gaming-card {
+    width: 100%;
+    padding: 20px;
+  }
+
+  .gaming-page h1 {
+    font-size: 28px;
+  }
+
+  .gaming-card h2 {
+    font-size: 22px;
+  }
+
+  .gaming-card p {
+    font-size: 16px;
+  }
+
+  .gaming-card h3 {
+    font-size: 22px;
+  }
+}
