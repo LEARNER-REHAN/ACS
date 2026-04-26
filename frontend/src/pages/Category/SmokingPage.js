@@ -1,175 +1,209 @@
-import React, { useState } from "react";
-import "../../styles/CategoryPage.css";
+import React, { useState, useEffect } from "react";
+import "../../styles/SmokingPage.css";
+
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  CartesianGrid,
+} from "recharts";
 
 function SmokingPage() {
-  const [target, setTarget] = useState("");
-  const [todayCigarettes, setTodayCigarettes] = useState("");
+  const today = new Date().toDateString();
 
-  const savedTarget = Number(localStorage.getItem("smokingTarget"));
+  const lastDate = localStorage.getItem("smokingLastDate");
+  const lastSmokeFreeDate = localStorage.getItem("lastSmokeFreeDate");
 
-  const history = JSON.parse(localStorage.getItem("smokingHistory")) || [];
+  let savedCigarettes = Number(localStorage.getItem("cigarettes")) || 0;
 
-  const latestRecord = history.length > 0 ? history[history.length - 1] : null;
+  let smokingHistory = JSON.parse(localStorage.getItem("smokingHistory")) || [];
 
-  // Save Target
-  const saveTarget = () => {
-    const value = Number(target);
+  let savedStreak = Number(localStorage.getItem("smokeFreeStreak")) || 0;
 
-    if (!value || value <= 0 || value > 100) {
-      alert("Target must be between 1-100 cigarettes");
-      return;
+  /* Reset cigarettes at new day */
+  if (lastDate !== today) {
+    if (lastDate) {
+      smokingHistory.push({
+        date: lastDate,
+        cigarettes: savedCigarettes,
+      });
+
+      localStorage.setItem("smokingHistory", JSON.stringify(smokingHistory));
     }
 
-    localStorage.setItem("smokingTarget", value);
+    savedCigarettes = 0;
 
-    alert("Target saved successfully!");
-    setTarget("");
-  };
+    localStorage.setItem("cigarettes", 0);
+    localStorage.setItem("smokingLastDate", today);
+  }
 
-  // Track Today
-  const trackToday = () => {
-    const value = Number(todayCigarettes);
+  /* Break streak if user misses a day */
+  if (lastSmokeFreeDate) {
+    const lastMarked = new Date(lastSmokeFreeDate);
+    const current = new Date(today);
 
-    if (!savedTarget) {
-      alert("Please set target first");
-      return;
-    }
+    const diffDays = Math.floor((current - lastMarked) / (1000 * 60 * 60 * 24));
 
-    if (value < 0 || value > 100) {
-      alert("Daily cigarettes must be between 0-100");
-      return;
-    }
-
-    const updatedHistory = [...history];
-
-    updatedHistory.push({
-      date: new Date().toLocaleDateString(),
-      cigarettes: value,
-    });
-
-    localStorage.setItem("smokingHistory", JSON.stringify(updatedHistory));
-
-    alert("Progress tracked successfully!");
-
-    setTodayCigarettes("");
-  };
-
-  // Reset Data
-  const resetData = () => {
-    localStorage.removeItem("smokingHistory");
-    localStorage.removeItem("smokingTarget");
-
-    alert("All smoking data cleared!");
-
-    setTarget("");
-    setTodayCigarettes("");
-  };
-
-  // Emergency Help
-  const emergencyHelp = () => {
-    alert(
-      "🚨 Emergency Help:\n\n" +
-        "• Drink water\n" +
-        "• Chew gum\n" +
-        "• Go for a walk\n" +
-        "• Call a friend\n" +
-        "• Avoid smoking triggers",
-    );
-  };
-
-  // Progress Calculation
-  let progress = 0;
-  let status = "No Data";
-
-  if (latestRecord && savedTarget) {
-    progress = Math.max(
-      0,
-      (((savedTarget - latestRecord.cigarettes) / savedTarget) * 100).toFixed(
-        1,
-      ),
-    );
-
-    if (latestRecord.cigarettes <= savedTarget) {
-      status = "✅ Good";
-    } else if (latestRecord.cigarettes <= savedTarget + 5) {
-      status = "⚠ Warning";
-    } else {
-      status = "🚨 Critical";
+    if (diffDays > 1) {
+      savedStreak = 0;
+      localStorage.setItem("smokeFreeStreak", 0);
     }
   }
 
+  const [cigarettes, setCigarettes] = useState(savedCigarettes);
+
+  const [streak, setStreak] = useState(savedStreak);
+
+  const [trigger, setTrigger] = useState("");
+
+  const cigaretteCost = 20;
+  const moneySpent = cigarettes * cigaretteCost;
+
+  useEffect(() => {
+    localStorage.setItem("cigarettes", cigarettes);
+
+    localStorage.setItem("smokeFreeStreak", streak);
+  }, [cigarettes, streak]);
+
+  const addCigarette = () => {
+    setCigarettes(cigarettes + 1);
+  };
+
+  const smokeFreeToday = () => {
+    const alreadyMarked = localStorage.getItem("lastSmokeFreeDate") === today;
+
+    if (cigarettes > 0) {
+      alert("You smoked today. Smoke-free streak cannot increase.");
+      return;
+    }
+
+    if (alreadyMarked) {
+      alert("You already marked today as smoke-free.");
+      return;
+    }
+
+    const newStreak = streak + 1;
+
+    setStreak(newStreak);
+
+    localStorage.setItem("smokeFreeStreak", newStreak);
+
+    localStorage.setItem("lastSmokeFreeDate", today);
+
+    alert("Great job! Smoke-free day added 🎉");
+  };
+
+  /* FIXED CHART DATA */
+  const chartData = [
+    ...smokingHistory.map((item) => ({
+      date: item.date,
+      cigarettes: item.cigarettes,
+    })),
+
+    {
+      date: "Today",
+      cigarettes: cigarettes,
+    },
+  ];
+
   return (
-    <div className="category-page">
-      <h2>🚬 Smoking Recovery</h2>
+    <div className="smoking-page">
+      <h1>🚬 Smoking Recovery Dashboard</h1>
 
-      {/* Set Target */}
-      <div className="card">
-        <h3>🎯 Set Daily Target</h3>
+      {/* Top Stats */}
+      <div className="top-stats">
+        <div className="stat-card">
+          <h4>Cigarettes Today</h4>
+          <h2>{cigarettes}</h2>
+        </div>
 
-        <input
-          type="number"
-          placeholder="Target cigarettes/day"
-          value={target}
-          onChange={(e) => setTarget(e.target.value)}
-        />
+        <div className="stat-card">
+          <h4>Money Spent</h4>
+          <h2>₹{moneySpent}</h2>
+        </div>
 
-        <button onClick={saveTarget}>Save Target</button>
+        <div className="stat-card">
+          <h4>Smoke Free Streak</h4>
+          <h2>{streak} Days</h2>
+        </div>
       </div>
 
-      {/* Track Today */}
-      <div className="card">
-        <h3>📊 Track Today</h3>
+      {/* Middle Layout */}
+      <div className="middle-grid">
+        {/* Left Section */}
+        <div className="left-section">
+          <div className="smoking-card">
+            <h3>Daily Tracker</h3>
 
-        <input
-          type="number"
-          placeholder="Today's cigarettes"
-          value={todayCigarettes}
-          onChange={(e) => setTodayCigarettes(e.target.value)}
-        />
+            <button onClick={addCigarette}>+ Smoked 1 Cigarette</button>
+          </div>
 
-        <button onClick={trackToday}>Track Today</button>
+          <div className="smoking-card">
+            <h3>Smoke Free Goal</h3>
+
+            <button onClick={smokeFreeToday}>Mark Today Smoke-Free</button>
+          </div>
+
+          <div className="smoking-card">
+            <h3>Trigger Detection</h3>
+
+            <select
+              value={trigger}
+              onChange={(e) => setTrigger(e.target.value)}
+            >
+              <option>Select Trigger</option>
+              <option>Stress</option>
+              <option>Friends</option>
+              <option>Work Pressure</option>
+              <option>Party</option>
+            </select>
+
+            {trigger && (
+              <div className="trigger-help-box">
+                <p>Trigger Detected: {trigger}</p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Right Chart */}
+        <div className="chart-card">
+          <h2>Smoking Trend</h2>
+
+          {chartData.length > 0 ? (
+            <ResponsiveContainer width="100%" height={350}>
+              <LineChart data={chartData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="date" />
+                <YAxis />
+                <Tooltip />
+
+                <Line
+                  type="monotone"
+                  dataKey="cigarettes"
+                  stroke="#ef4444"
+                  strokeWidth={3}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          ) : (
+            <p>No smoking history yet</p>
+          )}
+        </div>
       </div>
 
-      {/* Analytics */}
-      <div className="card">
-        <h3>📈 Analytics</h3>
+      {/* Bottom Insight */}
+      <div className="insight-card">
+        <h2>Health Recovery Milestones</h2>
 
-        <p>Current Target: {savedTarget || "Not Set"}</p>
+        <p>24 Hours → Lung recovery starts</p>
 
-        <p>
-          Latest Usage: {latestRecord ? latestRecord.cigarettes : "No Data"}
-        </p>
+        <p>7 Days → Breathing improves</p>
 
-        <p>Progress: {progress}%</p>
-
-        <p>Status: {status}</p>
-      </div>
-
-      {/* History */}
-      <div className="card">
-        <h3>📅 Recent History</h3>
-
-        {history.length === 0 ? (
-          <p>No history found</p>
-        ) : (
-          history
-            .slice(-5)
-            .reverse()
-            .map((item, index) => (
-              <p key={index}>
-                {item.date} → {item.cigarettes} cigarettes
-              </p>
-            ))
-        )}
-      </div>
-
-      {/* Actions */}
-      <div className="card actions">
-        <button onClick={emergencyHelp}>🚨 Emergency Help</button>
-
-        <button className="secondary" onClick={resetData}>
-          Reset Data
-        </button>
+        <p>30 Days → Cravings reduce</p>
       </div>
     </div>
   );

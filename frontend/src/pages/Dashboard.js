@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Home from "./Home";
 import DataEntry from "./DataEntry";
 import About from "./About";
+import ProgressPage from "./ProgressPage";
 
 import SmokingPage from "./Category/SmokingPage";
 import GamingPage from "./Category/GamingPage";
@@ -133,6 +134,13 @@ function Dashboard({ user, onLogout }) {
             </li>
 
             <li
+              className={page === "progress" ? "active" : ""}
+              onClick={() => setPage("progress")}
+            >
+              Progress
+            </li>
+
+            <li
               className={page === "about" ? "active" : ""}
               onClick={() => setPage("about")}
             >
@@ -175,7 +183,7 @@ function Dashboard({ user, onLogout }) {
         )}
 
         {page === "entry" && <DataEntry onAnalyze={analyzeData} />}
-
+        {page === "progress" && <ProgressPage />}
         {page === "about" && <About />}
 
         {page === "smoking" && <SmokingPage />}
