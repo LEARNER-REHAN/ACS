@@ -2,48 +2,75 @@ import React, { useState } from "react";
 import "../styles/dataEntry.css";
 
 function DataEntry({ onAnalyze }) {
-  const [category, setCategory] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const categories = [
+    {
+      name: "Gaming",
+      icon: "🎮",
+      desc: "Monitor gaming usage time",
+    },
+    {
+      name: "Social Media",
+      icon: "📱",
+      desc: "Track social media addiction",
+    },
+    {
+      name: "Streaming",
+      icon: "📺",
+      desc: "Monitor binge watching habits",
+    },
+    {
+      name: "Smoking",
+      icon: "🚬",
+      desc: "Track cigarettes, cravings & recovery",
+    },
+    {
+      name: "Alcohol",
+      icon: "🍺",
+      desc: "Track alcohol consumption",
+    },
+  ];
 
-    if (!category) {
-      alert("Please select addiction type");
+  const handleContinue = () => {
+    if (!selectedCategory) {
+      alert("Please select an addiction category");
       return;
     }
 
-    onAnalyze({ category });
+    onAnalyze({
+      category: selectedCategory,
+      usage: 2,
+      craving: 2,
+      mood: 8,
+    });
   };
 
   return (
-    <div className="data-entry">
-      <h2>🧠 Choose Your Addiction Type</h2>
+    <div className="entry-page">
+      <div className="entry-card">
+        <h1>🧠 Choose Your Addiction Type</h1>
 
-      <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label>Select Addiction Type</label>
-
-          <select
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            required
-          >
-            <option value="">-- Select --</option>
-
-            <option value="Smoking">🚬 Smoking</option>
-
-            <option value="Gaming">🎮 Gaming</option>
-
-            <option value="Social Media">📱 Social Media</option>
-
-            <option value="Streaming">📺 Streaming</option>
-
-            <option value="Alcohol">🍺 Alcohol</option>
-          </select>
+        <div className="category-grid">
+          {categories.map((item, index) => (
+            <div
+              key={index}
+              className={`category-box ${
+                selectedCategory === item.name ? "active-category" : ""
+              }`}
+              onClick={() => setSelectedCategory(item.name)}
+            >
+              <h2>{item.icon}</h2>
+              <h3>{item.name}</h3>
+              <p>{item.desc}</p>
+            </div>
+          ))}
         </div>
 
-        <button type="submit">Continue</button>
-      </form>
+        <button className="continue-btn" onClick={handleContinue}>
+          Continue
+        </button>
+      </div>
     </div>
   );
 }

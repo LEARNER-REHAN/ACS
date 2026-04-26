@@ -130,7 +130,7 @@ function Dashboard({ user, onLogout }) {
               className={page === "entry" ? "active" : ""}
               onClick={() => setPage("entry")}
             >
-              Daily Check-In
+              Check-In
             </li>
 
             <li
