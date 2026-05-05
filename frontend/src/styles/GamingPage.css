@@ -1,10 +1,15 @@
+/* =========================
+   GAMING PAGE
+========================= */
 .gaming-page {
   padding: 30px;
   background: #f8fafc;
   min-height: 100vh;
 }
 
-/* Title */
+/* =========================
+   TITLE
+========================= */
 .gaming-page h1 {
   font-size: 38px;
   font-weight: 700;
@@ -12,7 +17,9 @@
   margin-bottom: 30px;
 }
 
-/* Top Stats */
+/* =========================
+   TOP STATS
+========================= */
 .gaming-stats {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -38,7 +45,9 @@
   font-size: 32px;
 }
 
-/* Main Grid */
+/* =========================
+   MAIN GRID
+========================= */
 .gaming-main-grid {
   display: grid;
   grid-template-columns: 1.4fr 1fr;
@@ -46,7 +55,9 @@
   margin-bottom: 30px;
 }
 
-/* Live Tracking Card */
+/* =========================
+   GAMING CARD
+========================= */
 .gaming-card {
   background: white;
   padding: 30px;
@@ -59,12 +70,14 @@
   color: #1e293b;
 }
 
-/* Game rows */
+/* =========================
+   GAME ITEMS
+========================= */
 .game-item {
   display: flex;
   justify-content: space-between;
   padding: 18px;
-  background: #f8fafc;
+  background: #f1f5f9;
   margin-bottom: 15px;
   border-radius: 12px;
   font-weight: 600;
@@ -76,7 +89,9 @@
   font-weight: bold;
 }
 
-/* Status Box */
+/* =========================
+   STATUS BOX
+========================= */
 .status-box {
   margin-top: 20px;
   background: #dcfce7;
@@ -87,7 +102,9 @@
   font-weight: 600;
 }
 
-/* Chart */
+/* =========================
+   CHART BOX
+========================= */
 .chart-box {
   background: white;
   padding: 25px;
@@ -100,25 +117,43 @@
   color: #1e293b;
 }
 
-/* Insight */
+/* =========================
+   INSIGHT CARD (FIXED)
+========================= */
 .insight-card {
-  background: linear-gradient(135deg, #312e81, #4f46e5);
-  color: white;
+  background: linear-gradient(135deg, #1e3a8a, #4338ca) !important;
   padding: 30px;
   border-radius: 20px;
-  box-shadow: 0 10px 25px rgba(79, 70, 229, 0.2);
+  color: #ffffff !important;
+  position: relative;
+  z-index: 1;
 }
 
+/* REMOVE ANY OVERLAY BUG */
+.insight-card::before {
+  display: none !important;
+}
+
+/* HEADING */
 .insight-card h2 {
-  margin-bottom: 15px;
+  color: #ffffff !important;
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9);
 }
 
+/* TEXT */
 .insight-card p {
-  color: #e2e8f0;
+  color: #ffffff !important;
   font-size: 16px;
+  line-height: 1.6;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
 }
 
-/* Responsive */
+/* =========================
+   RESPONSIVE
+========================= */
 @media (max-width: 992px) {
   .gaming-stats {
     grid-template-columns: 1fr;

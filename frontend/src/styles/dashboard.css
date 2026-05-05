@@ -29,13 +29,6 @@
   box-shadow: 5px 0px 20px rgba(0, 0, 0, 0.12);
 }
 
-/* =========================
-   TOP SECTION
-========================= */
-.nav-left {
-  width: 100%;
-}
-
 /* Logo */
 .logo {
   font-size: 42px;
@@ -66,7 +59,6 @@
   font-size: 17px;
   font-weight: 500;
   color: white;
-
   transition: all 0.3s ease;
 }
 
@@ -75,25 +67,22 @@
   transform: translateX(4px);
   width: 85%;
   margin: 0 auto;
-  border-radius: 12px;
 }
+
 .nav-links li.active {
   background: white;
   color: #2563eb;
   font-weight: bold;
-
-  width: 85%; /* reduced width */
-  margin: 0 auto; /* centers it */
+  width: 85%;
+  margin: 0 auto;
   border-radius: 12px;
   padding: 16px 20px;
-
-  box-sizing: border-box;
 }
 
 /* =========================
    USER SECTION
 ========================= */
-.nav-right {
+.nav-bottom {
   width: 100%;
   padding-top: 20px;
   border-top: 1px solid rgba(255, 255, 255, 0.2);
@@ -108,7 +97,6 @@
   color: white;
 }
 
-/* Logout Button */
 .logout-btn {
   width: 100%;
   padding: 14px;
@@ -136,7 +124,6 @@
   padding: 40px;
 }
 
-/* Dashboard Title */
 .dashboard-title {
   font-size: 34px;
   font-weight: 700;
@@ -196,12 +183,14 @@
   margin-bottom: 15px;
 }
 
-/* HOME DASHBOARD */
+/* =========================
+   HOME DASHBOARD
+========================= */
 .home-dashboard {
   width: 100%;
 }
 
-/* Large Row */
+/* Layout Row */
 .dashboard-row {
   display: grid;
   grid-template-columns: 2fr 1fr;
@@ -209,12 +198,13 @@
   margin-top: 30px;
 }
 
-/* Bigger cards */
 .large-card {
   min-height: 250px;
 }
 
-/* Progress bar */
+/* =========================
+   PROGRESS BAR
+========================= */
 .progress-bar {
   width: 100%;
   height: 14px;
@@ -229,7 +219,9 @@
   border-radius: 20px;
 }
 
-/* Quick buttons */
+/* =========================
+   BUTTONS
+========================= */
 .quick-btn {
   width: 100%;
   padding: 14px;
@@ -240,13 +232,28 @@
   color: white;
   font-weight: bold;
   cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.quick-btn:hover {
+  transform: scale(1.02);
 }
 
 .secondary-btn {
   background: #64748b;
 }
 
-/* History */
+.danger-btn {
+  background: #ef4444;
+}
+
+.danger-btn:hover {
+  background: #dc2626;
+}
+
+/* =========================
+   HISTORY TABLE
+========================= */
 .history-card {
   margin-top: 30px;
 }
@@ -257,22 +264,49 @@
   margin-top: 20px;
 }
 
+.history-table th {
+  color: #475569;
+  font-weight: 600;
+}
+
 .history-table th,
 .history-table td {
   padding: 12px;
   text-align: left;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid #e2e8f0;
 }
 
-/* Motivation */
+/* =========================
+   MOTIVATION CARD (FIXED)
+========================= */
 .motivation-card {
   margin-top: 30px;
   text-align: center;
-  background: linear-gradient(90deg, #2563eb, #7c3aed);
+  background: linear-gradient(135deg, #2563eb, #7c3aed);
   color: white;
+
+  padding: 35px;
+  border-radius: 18px;
+
+  /* 🔥 FIX VISIBILITY */
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 10px 30px rgba(124, 58, 237, 0.4);
 }
 
-/* Improvement Colors */
+.motivation-card h3 {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.motivation-card p {
+  font-size: 18px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+/* =========================
+   COLORS
+========================= */
 .positive {
   color: green;
 }
@@ -281,10 +315,125 @@
   color: red;
 }
 
-.danger-btn {
-  background: #ef4444;
+/* Prediction Layout */
+.prediction-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 25px;
+  margin-top: 15px;
 }
 
-.danger-btn:hover {
-  background: #dc2626;
+.prediction-left p {
+  margin-bottom: 12px;
+  color: #334155;
+}
+
+/* Boxes */
+.prediction-box {
+  background: #eff6ff;
+  padding: 15px;
+  border-radius: 12px;
+  margin-bottom: 15px;
+  border-left: 5px solid #2563eb;
+}
+
+.prediction-box.green {
+  background: #f0fdf4;
+  border-left: 5px solid #22c55e;
+}
+
+/* Risk Colors */
+.risk-high {
+  color: #ef4444;
+  font-weight: bold;
+}
+
+.risk-medium {
+  color: #f59e0b;
+  font-weight: bold;
+}
+
+.risk-low {
+  color: #22c55e;
+  font-weight: bold;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .prediction-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* LEFT GRID */
+.prediction-left {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+/* CARD BASE */
+.info-card {
+  padding: 18px;
+  border-radius: 14px;
+  text-align: center;
+  font-weight: 500;
+  transition: 0.2s ease;
+  border: 1px solid #e2e8f0;
+}
+
+.info-card:hover {
+  transform: translateY(-4px);
+}
+
+/* ICON */
+.info-card span {
+  font-size: 22px;
+  display: block;
+  margin-bottom: 6px;
+}
+
+/* TITLE */
+.info-card h4 {
+  font-size: 13px;
+  color: #64748b;
+  margin-bottom: 5px;
+}
+
+/* VALUE */
+.info-card p {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+/* 🎯 CATEGORY */
+.info-card.category {
+  background: #f1f5f9;
+}
+
+/* ⚠️ RISK COLORS */
+.info-card.risk.low {
+  background: #ecfdf5;
+  color: #16a34a;
+}
+
+.info-card.risk.medium {
+  background: #fffbeb;
+  color: #d97706;
+}
+
+.info-card.risk.high {
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+/* ⏱ USAGE */
+.info-card.usage {
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+/* 📊 STATUS */
+.info-card.status {
+  background: #f8fafc;
 }

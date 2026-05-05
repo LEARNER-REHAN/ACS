@@ -5,10 +5,8 @@ function Home({ setPage }) {
   const streak = Number(localStorage.getItem("streak")) || 0;
   const progress = Number(localStorage.getItem("overallProgress")) || 0;
   const improvement = Number(localStorage.getItem("improvement")) || 0;
-  const risk = localStorage.getItem("riskLevel") || "Low";
 
   const history = JSON.parse(localStorage.getItem("history")) || [];
-
   const latestRecords = history.slice(-5).reverse();
 
   const handleEmergencySupport = () => {
@@ -27,7 +25,7 @@ function Home({ setPage }) {
     <div className="home-dashboard">
       <h1 className="dashboard-title">Welcome Back</h1>
 
-      {/* Top Stats */}
+      {/* ✅ Top Stats (FIXED — removed risk card) */}
       <div className="card-grid">
         <div className="card">
           <h4>Current Streak</h4>
@@ -45,11 +43,6 @@ function Home({ setPage }) {
             {improvement}%
           </p>
         </div>
-
-        <div className="card">
-          <h4>Risk Level</h4>
-          <p>{risk}</p>
-        </div>
       </div>
 
       {/* Middle Section */}
@@ -60,9 +53,7 @@ function Home({ setPage }) {
           <div className="progress-bar">
             <div
               className="progress-fill"
-              style={{
-                width: `${progress}%`,
-              }}
+              style={{ width: `${progress}%` }}
             ></div>
           </div>
 
@@ -101,22 +92,87 @@ function Home({ setPage }) {
               <tr>
                 <th>Date</th>
                 <th>Category</th>
-                <th>Usage</th>
-                <th>Mood</th>
-                <th>Risk</th>
+                <th>Session</th>
+                <th>Status</th>
               </tr>
             </thead>
 
             <tbody>
-              {latestRecords.map((item, index) => (
-                <tr key={index}>
-                  <td>{item.date}</td>
-                  <td>{item.category}</td>
-                  <td>{item.usage}</td>
-                  <td>{item.mood}</td>
-                  <td>{item.risk}</td>
-                </tr>
-              ))}
+              {latestRecords.map((item, index) => {
+                let session = "Light";
+                let status = "Improving";
+
+                // 🔥 TIME BASED
+                if (
+                  item.category === "Social Media" ||
+                  item.category === "Gaming" ||
+                  item.category === "Streaming"
+                ) {
+                  let data = {};
+
+                  if (item.category === "Social Media") {
+                    data =
+                      JSON.parse(localStorage.getItem("socialUsageData")) || {};
+                  } else if (item.category === "Gaming") {
+                    data =
+                      JSON.parse(localStorage.getItem("gamingUsageData")) || {};
+                  } else if (item.category === "Streaming") {
+                    data =
+                      JSON.parse(localStorage.getItem("streamingUsageData")) ||
+                      {};
+                  }
+
+                  const totalSeconds = Object.values(data).reduce(
+                    (a, b) => a + b,
+                    0,
+                  );
+
+                  const hours = totalSeconds / 3600;
+
+                  if (hours >= 6) {
+                    session = "Heavy";
+                    status = "Declining";
+                  } else if (hours >= 2) {
+                    session = "Moderate";
+                    status = "Warning";
+                  }
+                }
+
+                // 🚬 Smoking
+                else if (item.category === "Smoking") {
+                  const cigs = Number(localStorage.getItem("cigarettes")) || 0;
+
+                  if (cigs >= 6) {
+                    session = "Heavy";
+                    status = "Declining";
+                  } else if (cigs >= 3) {
+                    session = "Moderate";
+                    status = "Warning";
+                  }
+                }
+
+                // 🍺 Alcohol
+                else if (item.category === "Alcohol") {
+                  const drinks = Number(localStorage.getItem("drinks")) || 0;
+
+                  if (drinks >= 5) {
+                    session = "Heavy";
+                    status = "Declining";
+                  } else if (drinks >= 2) {
+                    session = "Moderate";
+                    status = "Warning";
+                  }
+                }
+
+                return (
+                  <tr key={index}>
+                    <td>{item.date}</td>
+                    <td>{item.category}</td>
+                    <td>{session}</td>
+                    <td>{status}</td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         )}
